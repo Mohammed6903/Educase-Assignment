@@ -9,10 +9,51 @@ export default function SignupScreen() {
   const [password, setPassword] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [isAgency, setIsAgency] = useState("yes");
+  const [errors, setErrors] = useState({
+    fullName: "",
+    phoneNumber: "",
+    email: "",
+    password: "",
+    companyName: "",
+    isAgency: "",
+  });
 
   function isValidEmail(email: string) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
+
+  const validateForm = () => {
+    let valid = true;
+    const newErrors: any = {};
+
+    if (fullName.trim() === "") {
+      newErrors.fullName = "Full name is required.";
+      valid = false;
+    }
+
+    if (phoneNumber.trim() === "") {
+      newErrors.phoneNumber = "Phone number is required.";
+      valid = false;
+    }
+
+    if (!isValidEmail(email)) {
+      newErrors.email = "Please enter a valid email address.";
+      valid = false;
+    }
+
+    if (password.trim() === "") {
+      newErrors.password = "Password is required.";
+      valid = false;
+    }
+
+    if (isAgency === "") {
+      newErrors.isAgency = "Please select if you are an agency.";
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    return valid;
+  };
 
   const isFormValid =
     fullName.trim() !== "" &&
@@ -56,6 +97,9 @@ export default function SignupScreen() {
                   className="w-full bg-gray-50 pl-1 h-10 border-none focus:ring-0 focus:outline-none text-sm flex items-center"
                   required
                 />
+                {errors.fullName && (
+                  <p className="text-red-500 text-xs">{errors.fullName}</p>
+                )}
               </fieldset>
 
               <fieldset className="border border-gray-300 rounded-md px-3 relative">
@@ -70,6 +114,9 @@ export default function SignupScreen() {
                   className="w-full bg-gray-50 pl-1 h-10 border-none focus:ring-0 focus:outline-none text-sm flex items-center"
                   required
                 />
+                {errors.phoneNumber && (
+                  <p className="text-red-500 text-xs">{errors.phoneNumber}</p>
+                )}
               </fieldset>
 
               <fieldset className="border border-gray-300 rounded-md px-3 relative">
@@ -84,6 +131,9 @@ export default function SignupScreen() {
                   className="w-full bg-gray-50 pl-1 h-10 border-none focus:ring-0 focus:outline-none text-sm flex items-center"
                   required
                 />
+                {errors.email && (
+                  <p className="text-red-500 text-xs">{errors.email}</p>
+                )}
               </fieldset>
 
               <fieldset className="border border-gray-300 rounded-md px-3 relative">
@@ -98,8 +148,10 @@ export default function SignupScreen() {
                   className="w-full bg-gray-50 pl-1 h-10 border-none focus:ring-0 focus:outline-none text-sm flex items-center"
                   required
                 />
+                {errors.password && (
+                  <p className="text-red-500 text-xs">{errors.password}</p>
+                )}
               </fieldset>
-
 
               <fieldset className="border border-gray-300 rounded-md px-3 relative">
                 <legend className="text-xs font-semibold text-purple-1000 px-1">
@@ -155,6 +207,9 @@ export default function SignupScreen() {
                     <span className="text-sm">No</span>
                   </label>
                 </div>
+                {errors.isAgency && (
+                  <p className="text-red-500 text-xs">{errors.isAgency}</p>
+                )}
               </div>
             </div>
           </div>
@@ -166,7 +221,11 @@ export default function SignupScreen() {
               href="/profile"
               className={`w-full flex justify-center items-center py-3 ${isFormValid ? "bg-purple-1000" : "bg-gray-400"
                 } text-white text-sm font-semibold rounded-md transition-colors`}
-              onClick={(e) => !isFormValid && e.preventDefault()}
+              onClick={(e) => {
+                if (!validateForm()) {
+                  e.preventDefault();
+                }
+              }}
             >
               Create Account
             </Link>
